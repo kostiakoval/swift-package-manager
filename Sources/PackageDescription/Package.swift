@@ -49,11 +49,15 @@ public final class Package {
     /// The list of dependencies.
     public var dependencies: [Dependency]
 
+    /// The list of folders to exlude
+    public var exclude: [String]
+
     /// Construct a package.
-    public init(name: String? = nil, targets: [Target] = [], dependencies: [Dependency] = []) {
+    public init(name: String? = nil, targets: [Target] = [], dependencies: [Dependency] = [], exclude: [String] = []) {
         self.name = name
         self.targets = targets
         self.dependencies = dependencies
+        self.exclude = exclude
 
         // Add custom exit handler to cause package to be dumped at exit, if requested.
         //
