@@ -340,7 +340,6 @@ class FunctionalBuildTests: XCTestCase, XCTestCaseProvider {
             XCTAssertNotNil(try? executeSwiftBuild(prefix))
             XCTAssertTrue(self.verifyFilesExist(filesToVerify, fixturePath: prefix))
             XCTAssertFalse(self.verifyFilesExist(filesShouldNotExist, fixturePath: prefix))
-
         }
     }
 
