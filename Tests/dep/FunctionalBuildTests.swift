@@ -70,7 +70,7 @@ class FunctionalBuildTests: XCTestCase, XCTestCaseProvider {
 
     func verifyFilesExist(files: [String], fixturePath: String) -> Bool {
         for file in files {
-            let name = fixturePath.characters.split("/").map(String.init).last!
+            let name = fixturePath.basename
             let filePath: String
             switch file {
                 // Target (library) not in subfolder
@@ -128,7 +128,7 @@ class FunctionalBuildTests: XCTestCase, XCTestCaseProvider {
         }
     }
 
-    // 5: Package with multiple exectuble targets
+    // 5: Package with multiple executable targets
     func testMultipleExecTargets() {
         let filesToVerify = ["BarExec", "FooBarExec", "FooExec"]
         fixture(name: "5_buildexec_mult_targets") { prefix in
