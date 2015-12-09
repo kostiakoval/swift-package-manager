@@ -50,8 +50,6 @@ extension PackageDescription.Package {
                 exclude.append(exludeItem)
             }
         }
-
-
         
         return PackageDescription.Package(name: name, targets: targets, dependencies: dependencies, exclude: exclude)
     }
