@@ -110,3 +110,10 @@ private func dumpPackageAtExit(package: Package) {
     thePackageToDump = package
     atexit(dump)
 }
+
+
+extension Package: CustomStringConvertible {
+    public var description: String {
+        return "Package\n name: \(name)\n targets: \(targets)\n dependencies: \(dependencies)\n exclude: \(exclude)"
+    }
+}

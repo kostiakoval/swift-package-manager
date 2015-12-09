@@ -41,6 +41,8 @@ do {
         let rootd = try findSourceRoot()
         let manifest = try Manifest(path: "\(rootd)/Package.swift", baseURL: rootd)
         let pkgname = manifest.package.name ?? rootd.basename
+        let ignoreDirs = manifest.package.exclude
+        
         let depsdir = Path.join(rootd, "Packages")
         let computedTargets = try determineTargets(packageName: pkgname, prefix: rootd, ignore: [depsdir])
         let targets = try manifest.configureTargets(computedTargets)
