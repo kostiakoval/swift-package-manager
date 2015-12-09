@@ -84,6 +84,8 @@ public final class Package {
         for target in targets {
             result += target.toTOML("package.targets")
         }
+        result += "\n" + "exclude = \(exclude)"
+
         return result
     }
 }
