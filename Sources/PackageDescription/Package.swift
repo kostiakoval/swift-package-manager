@@ -21,6 +21,14 @@ protocol TOMLConvertible {
     func toTOML() -> String
 }
 
+///
+struct TOMLSerializer {
+
+    static func serializeArray(key: String, elements: [TOMLConvertible]) -> String {
+        return ""
+    }
+}
+
 /// The description for a complete package.
 public final class Package {
     /// The description for a package dependency.
@@ -107,6 +115,8 @@ extension Package: TOMLConvertible {
             result += dependency.toTOML()
         }
         result += "]\n"
+        result += TOMLSerializer.serializeArray("dependencies", elements: dependencies)
+        result += TOMLSerializer.serializeArray("testDependencies", elements: testDependencies)
 
         result += "\n" + "exclude = \(exclude)" + "\n"
 
