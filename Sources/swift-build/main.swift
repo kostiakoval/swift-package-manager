@@ -66,6 +66,10 @@ do {
             let yaml = try describe(dirs.build, conf, modules, Set<Module>(externalModules), products, Xcc: opts.Xcc, Xld: opts.Xld, Xswiftc: opts.Xswiftc, toolchain: toolchain)
             try build(YAMLPath: yaml, target: "default")
 
+        case .Lock:
+            print("Generate Lockfile")
+        case .IgnoreLock:
+            print("build Ignore Lockfile")
         case .Init(let initMode):
             let initPackage = InitPackage(mode: initMode)
             try initPackage.writePackageStructure()

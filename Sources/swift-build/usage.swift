@@ -24,6 +24,8 @@ func usage(print: (String) -> Void = { print($0) }) {
     print("  --init <mode>                  Creates a new Swift package (executable|library)")
     print("  --fetch                        Fetch package dependencies")
     print("  --generate-xcodeproj [<path>]  Generates an Xcode project for this package [-X]")
+    print("  --lock                         Generates the lockfile")
+    print("  --ignore-lock                  Ignore lockfile when build")
     print("")
     print("OPTIONS:")
     print("  --chdir <value>    Change working directory before any other operation [-C]")
@@ -46,6 +48,8 @@ enum Mode {
     case Usage
     case Version
     case GenerateXcodeproj(String?)
+    case Lock
+    case IgnoreLock
 }
 
 struct Options {
@@ -157,6 +161,10 @@ func parse(commandLineArguments args: [String]) throws -> (Mode, Options) {
                 default:
                     break
                 }
+            case (nil, .Lock):
+                mode = .Lock
+            case (nil, .IgnoreLock):
+                mode = .IgnoreLock
             }
 
         case .Switch(.Chdir):
@@ -208,6 +216,8 @@ extension Mode: CustomStringConvertible {
             case .Init: return "--init"
             case .Usage: return "--help"
             case .Version: return "--version"
+            case .Lock: return "--lock"
+            case .IgnoreLock: return "--ignore-lock"
         }
     }
 }
@@ -223,6 +233,8 @@ private struct Cruncher {
             case Init = "--init"
             case Usage = "--help"
             case Version = "--version"
+            case Lock = "--lock"
+            case IgnoreLock = "--ignore-lock"
 
             init?(rawValue: String) {
                 switch rawValue {
@@ -240,6 +252,10 @@ private struct Cruncher {
                     self = .Usage
                 case Version.rawValue:
                     self = .Version
+                case Lock.rawValue:
+                    self = .Lock
+                case IgnoreLock.rawValue:
+                    self = .IgnoreLock
                 default:
                     return nil
                 }
@@ -327,5 +343,7 @@ private func ==(lhs: Mode, rhs: Cruncher.Crunch.TheMode) -> Bool {
         case .Init: return rhs == .Init
         case .Version: return rhs == .Version
         case .Usage: return rhs == .Usage
+        case .Lock: return rhs == .Lock
+        case .IgnoreLock: return rhs == .IgnoreLock
     }
 }
