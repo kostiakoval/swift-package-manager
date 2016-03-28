@@ -43,8 +43,8 @@ public struct Lockfile {
         return json
     }
 
-    static var exist: Bool {
-        return true
+    public static func exists(rootDir: String) -> Bool {
+        return Path.join(rootDir, Lockfile.fileName).exists
     }
 
     static let fileName = "PackageVersions.json"

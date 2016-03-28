@@ -10,6 +10,7 @@
 
 enum Error: ErrorProtocol {
     case ManifestAlreadyExists
+    case NoLockfile
 }
 
 extension Error: CustomStringConvertible {
@@ -17,6 +18,8 @@ extension Error: CustomStringConvertible {
         switch self {
         case .ManifestAlreadyExists:
             return "a manifest file already exists in this directory"
+        case .NoLockfile:
+            return "PackageVersions.json lock file not found. \nexecute `swift build --lock`"
         }
     }
 }

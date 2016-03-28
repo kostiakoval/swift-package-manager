@@ -62,17 +62,22 @@ do {
     switch mode {
         case .Build(let conf, let toolchain):
             let dirs = try directories()
+            let lockfileExists = Lockfile.exists(dirs.root)
+            if Path.join(dirs.root, "Packages").exists && !lockfileExists {
+                throw Error.NoLockfile
+            }
             let (rootPackage, externalPackages) = try fetch(dirs.root)
+            try Lockfile.generate(dirs.root)
             let (modules, externalModules, products) = try transmute(rootPackage, externalPackages: externalPackages)
             let yaml = try describe(dirs.build, conf, modules, Set<Module>(externalModules), products, Xcc: opts.Xcc, Xld: opts.Xld, Xswiftc: opts.Xswiftc, toolchain: toolchain)
             try build(YAMLPath: yaml, target: "default")
 
         case .Lock:
-            print("Generate Lockfile")
             let dirs = try directories()
             try Lockfile.generate(dirs.root)
         case .IgnoreLock:
             print("build Ignore Lockfile")
+            // run build without checking changes in lock file
         case .Init(let initMode):
             let initPackage = InitPackage(mode: initMode)
             try initPackage.writePackageStructure()
