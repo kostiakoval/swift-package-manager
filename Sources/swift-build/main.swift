@@ -17,6 +17,7 @@ import PackageType
 import Multitool
 import Transmute
 import Xcodeproj
+import Lockfile
 import Utility
 import Build
 import Get
@@ -68,6 +69,8 @@ do {
 
         case .Lock:
             print("Generate Lockfile")
+            let dirs = try directories()
+            try Lockfile.generate(dirs.root)
         case .IgnoreLock:
             print("build Ignore Lockfile")
         case .Init(let initMode):

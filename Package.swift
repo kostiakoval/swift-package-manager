@@ -55,9 +55,13 @@ let package = Package(
             name: "Xcodeproj",
             dependencies: ["PackageType"]),
         Target(
+            /** Version Locking functionality*/
+            name: "Lockfile",
+            dependencies: ["Utility"]),
+        Target(
             /** The main executable provided by SwiftPM */
             name: "swift-build",
-            dependencies: ["ManifestParser", "Get", "Transmute", "Build", "Multitool", "Xcodeproj"]),
+            dependencies: ["ManifestParser", "Get", "Transmute", "Build", "Multitool", "Xcodeproj", "Lockfile"]),
         Target(
             /** Runs package tests */
             name: "swift-test",
