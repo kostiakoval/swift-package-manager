@@ -57,7 +57,7 @@ let package = Package(
         Target(
             /** Version Locking functionality*/
             name: "Lockfile",
-            dependencies: ["Utility"]),
+            dependencies: ["Utility", "Get"]),
         Target(
             /** The main executable provided by SwiftPM */
             name: "swift-build",

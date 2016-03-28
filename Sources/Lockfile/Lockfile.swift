@@ -9,6 +9,7 @@
 */
 
 import Utility
+import Get
 import func POSIX.mkdir
 import func POSIX.fopen
 import func POSIX.fputs
@@ -82,9 +83,10 @@ func packageJson(clone: String, repo: Git.Repo) -> String {
     var json = ""
     json += "\t\t\t\"clone\": \"Packages/\(clone)\",\n"
     json += "\t\t\t\"origin\": \"\(origin)\",\n"
+    //TODO: remove bang!
+    json += "\t\t\t\"ref\": \"\(repo.versions.last!)\",\n"
 
-    //TODO: add ref and sha values
-    json += "\t\t\t\"ref\": \"\",\n"
+    //TODO: add sha value
     json += "\t\t\t\"sha\": \"\"\n"
 
     return json
