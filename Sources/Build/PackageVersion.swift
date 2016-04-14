@@ -18,47 +18,19 @@ public func generateVersionData(_ rootDir: String, rootPackage: Package, externa
     let dirPath = Path.join(rootDir, ".build/versionData")
     try mkdir(dirPath)
 
-    try saveRootPackage(dirPath, package: rootPackage)
-    for (pkgName, data) in generateData(externalPackages) {
-        try saveVersionData(dirPath, packageName: pkgName, data: data)
-    }
-}
-
-func saveRootPackage(_ dirPath: String, package: Package) throws {
-    guard let repo = Git.Repo(path: package.path) else { return }
-    var data = versionData(package: package)
-    data += "public let sha: String? = "
-
-    if let version = package.version {
-        let prefix = repo.versionsArePrefixed ? "v" : ""
-        let versionSha = try repo.versionSha(tag: "\(prefix)\(version)")
-
-        if repo.sha != versionSha {
-            data += "\"\(repo.sha)\"\n"
-        } else {
-            data += "nil\n"
-        }
-    } else {
-        data += "\"\(repo.sha)\"\n"
-    }
-
-    data += "public let modified: Bool = "
-    data += repo.hasLocalChanges ? "true" : "false"
-    data += "\n"
-
-    try saveVersionData(dirPath, packageName: package.name, data: data)
-}
-
-func generateData(_ packages: [Package]) -> [String : String] {
-    var data = [String : String]()
+    let packages = externalPackages + [rootPackage]
     for pkg in packages {
-        data[pkg.name] = versionData(package: pkg)
+        let data = try versionData(package: pkg)
+        try saveVersionData(dirPath, packageName: pkg.name, data: data)
     }
-    return data
 }
 
-func versionData(package: Package) -> String {
+func versionData(package: Package) throws -> String {
+    let repo = Git.Repo(path: package.path)
+
+    //TODO: user repo?.origin ?? package.url. Not it exits if there is origin
     var data = "public let url: String = \"\(package.url)\"\n"
+
     data += "public let version: (major: Int, minor: Int, patch: Int, prereleaseIdentifiers: [String], buildMetadata: String?) = "
     if let version = package.version {
         data += "\(version.major, version.minor, version.patch, version.prereleaseIdentifiers, version.buildMetadataIdentifier)\n"
@@ -66,6 +38,30 @@ func versionData(package: Package) -> String {
     } else {
         data += "(0, 0, 0, [], nil) \n"
         data += "public let versionString: String = \"0.0.0\"\n"
+    }
+
+    data += "public let sha: String? = "
+    if let repo = repo {
+        if let version = package.version {
+            let prefix = repo.versionsArePrefixed ? "v" : ""
+            let versionSha = try repo.versionSha(tag: "\(prefix)\(version)")
+
+            if repo.sha != versionSha {
+                data += "\"\(repo.sha)\"\n"
+            } else {
+                data += "nil\n"
+            }
+        } else {
+            data += "\"\(repo.sha)\"\n"
+        }
+
+        data += "public let modified: Bool = "
+        data += repo.hasLocalChanges ? "true" : "false"
+        data += "\n"
+
+    } else {
+        data += "nil\n"
+        data += "public let modified: Bool = false\n"
     }
 
     return data
